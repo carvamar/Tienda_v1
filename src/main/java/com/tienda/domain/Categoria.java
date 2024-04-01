@@ -5,7 +5,6 @@ import java.io.Serializable;
 import java.util.List;
 import lombok.Data;
 
-
 @Data
 @Entity
 @Table(name = "categoria")
@@ -23,11 +22,10 @@ public class Categoria implements Serializable { //serializacion porque se va al
     private boolean activo;
     
     @OneToMany
-    @JoinColumn(name="id_categoria", updatable = false)
+    @JoinColumn(name = "id_categoria", updatable=false)
     List <Producto> productos;
-  
-   
     
+
     public Categoria() {
     }
 

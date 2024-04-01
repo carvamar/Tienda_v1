@@ -1,6 +1,4 @@
-
 package com.tienda.controller;
-
 
 import com.tienda.domain.Categoria;
 import com.tienda.domain.Producto;
@@ -22,37 +20,35 @@ public class PruebasController {
   
     @Autowired
     private ProductoService productoService;
-    
     @Autowired
-    private CategoriaService categoriaService; 
-    
-    @GetMapping("/listado")
+    private CategoriaService categoriaService;
+    @GetMapping("/listado")//Listado para traernos la informacion para las asociaciones de categoria y productos
     private String listado(Model model) {
         var productos = productoService.getProductos(false);
-        var categorias = categoriaService.getCategorias(false); 
+        var categorias = categoriaService.getCategorias(false);
         model.addAttribute("productos", productos);
         model.addAttribute("totalProductos",productos.size());
-        model.addAttribute("categorias", categorias); 
+        model.addAttribute("categorias", categorias);
         return "/pruebas/listado";
     }
     
-    @GetMapping("/listado/{idCategoria}")
+    @GetMapping("/listado/{idCategoria}")// Para traernos todas las cateogrias para utilizarlas en el tab de asociaciones
     public String listado(Model model, Categoria categoria) {
-        var productos = categoriaService.getCategoria(categoria).getProductos(); //asociación de productos con categorias
-        var categorias = categoriaService.getCategorias(false); 
+        var productos = categoriaService.getCategoria(categoria).getProductos();//asociacion de productos con categorias
+        var categorias = categoriaService.getCategorias(false);
         model.addAttribute("productos", productos);
         model.addAttribute("totalProductos",productos.size());
-        model.addAttribute("categorias", categorias); 
+        model.addAttribute("categorias", categorias);
         return "/pruebas/listado";
     }
-    @GetMapping("/listado2")
+    
+    @GetMapping("/listado2")//Listado2 es para la parte de consultas
     private String listado2(Model model) {
         var productos = productoService.getProductos(false);
         model.addAttribute("productos", productos);
-        
         return "/pruebas/listado2";
     }
-    @PostMapping("/query1")
+    @PostMapping("/query1")//Agregando el codigo para el filtro creado de precioBetween
     public String consultaQuery1(@RequestParam(value = "precioInf") double precioInf,
             @RequestParam(value = "precioSup") double precioSup, Model model) {
         var productos = productoService.findByPrecioBetweenOrderByDescripcion(precioInf, precioSup);
@@ -61,5 +57,27 @@ public class PruebasController {
         model.addAttribute("precioSup", precioSup);
         return "/pruebas/listado2";
     }
-     
+    @PostMapping("/query2")
+    public String consultaQuery2(@RequestParam(value = "precioInf") double precioInf,
+            @RequestParam(value = "precioSup") double precioSup, Model model) {
+        var productos = productoService.metodoJPQL(precioInf, precioSup);
+        model.addAttribute("productos", productos);        
+        model.addAttribute("totalProductos", productos.size());
+        model.addAttribute("precioInf", precioInf);
+        model.addAttribute("precioSup", precioSup);
+        return "/pruebas/listado2";
+    }
+    @PostMapping("/query3")
+    public String consultaQuery3(@RequestParam(value = "precioInf") double precioInf,
+            @RequestParam(value = "precioSup") double precioSup, Model model) {
+        var productos = productoService.metodoNativo(precioInf, precioSup);
+        model.addAttribute("productos", productos);
+        model.addAttribute("totalProductos", productos.size());
+        model.addAttribute("precioInf", precioInf);
+        model.addAttribute("precioSup", precioSup);
+        return "/pruebas/listado2";
+    }
+    
+
+
 }
